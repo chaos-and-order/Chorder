@@ -112,7 +112,7 @@ contract Chorder is ERC721{
     function buyFromPublisher(uint _movieId) public payable returns (bool) {
         //to revert back if the buyer doesn't have the price by the author.
         require(fileinfo[_movieId].publisherAddress != address(0),"Movie does not exist !");
-        require(msg.value >= setPrice[_movieId],"Insufficient funds ! Please pay the price as set by the author.");
+        require(msg.value == setPrice[_movieId],"Insufficient funds ! Please pay the price as set by the author.");
         uint256 tokenId = _generateTokenID(_movieId);
         //A new and unique token gets generated, corresponding to the particular movie.
         _generateToken(msg.sender, tokenId,_movieId);
@@ -136,7 +136,7 @@ contract Chorder is ERC721{
         //works only if the given token is up for sale
         require(reSale[tokenId].isUpForResale == true, "This token hasn't been put for sale by the owner");
         //set to a static value. This becomes an auction in future versions
-        require(msg.value >= reSale[tokenId].resalePrice, "Your price doesn't match the price given by the tokenOwner");
+        require(msg.value == reSale[tokenId].resalePrice, "Your price doesn't match the price given by the tokenOwner");
 
         //Finding the commissionPercent from fileinfo, and then finding the concrete value of it
         uint256 resaleCommission = msg.value*((fileinfo[reSale[tokenId].movieId].transactionCommission)/100);

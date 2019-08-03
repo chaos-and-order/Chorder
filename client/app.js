@@ -26,7 +26,10 @@ var Web3 = require('web3');
 var ChorderContractJSON = require(path.join(__dirname, '../build/contracts/Chorder.json'));
 
 // Establishing connection with Ganache 
-web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+//web3 current provider
+// var web3 = new Web3(window.web3.currentProvider);
 
 // Get contract address from network id 4002 (network id of geth private chain)
 

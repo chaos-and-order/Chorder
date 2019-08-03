@@ -3,7 +3,7 @@ var Web3 = require('web3');
 var router = express.Router();
 
  
-web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
  
 var secondAddress;
 web3.eth.getAccounts().then(e => {
