@@ -5,25 +5,23 @@ var router = express.Router();
  
 web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
  
-var publisherAddress;
+var secondAddress;
 web3.eth.getAccounts().then(e => {
-	publisherAddress=e[0]; 
-	console.log('Publish Content handled by: ' +publisherAddress);
+	secondAddress=e[1]; 
+	console.log('Set Resale handled by: ' +secondAddress);
 });
 
-
 router.get('/', function(req, res, next) {
-  res.render('publishContent');
+  res.render('setResalePrice');
 });
 
 router.post('/',async function(req, res, next) {
 
-    console.log("Movie_Id : ", req.body.movie_id);
+    console.log("Token ID : ", req.body.token_id);
 
     try {
       console.log("Inside Try: " )
-      console.log("Publisher address: ", publisherAddress);
-      await ChorderContract.methods.addMovieDetails(req.body.ipfsHash, req.body.movie_id, req.body.price, req.body.saleCommission).send({from: publisherAddress, gas: 1500000 }).then(function (value) {
+      await ChorderContract.methods.setResalePrice(req.body.reSalePrice, req.body.token_id).send({ from: secondAddress, gas: 1500000 }).then(function (value) {
           
       });
   } catch (err) {

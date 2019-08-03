@@ -7,8 +7,44 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var publishContentRouter = require('./routes/publishContent');
+var buyFromPublisherRouter = require('./routes/buyFromPublisher');
+var setResalePriceRouter = require('./routes/setResalePrice');
+var buyTokenRouter = require('./routes/buyToken');
+var transferRouter = require('./routes/transfer');
+var viewTokenDataRouter = require('./routes/viewTokenData');
+var withdrawBalanceRouter = require('./routes/withdrawBalance');
+
 
 var app = express();
+
+
+//Web3 and Contract Stuff
+
+
+var Web3 = require('web3');
+// Importing compiled output of FarmVerification contract from build directory
+var ChorderContractJSON = require(path.join(__dirname, '../build/contracts/Chorder.json'));
+
+// Establishing connection with Ganache 
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+
+// Get contract address from network id 4002 (network id of geth private chain)
+
+contractAddress = ChorderContractJSON.networks['5777'].address;
+console.log("Contract Address: ", contractAddress);
+
+// ABI
+const abi = ChorderContractJSON.abi;
+
+// Creating contract object
+ChorderContract = new web3.eth.Contract(abi, contractAddress);
+
+//Setting deployer address using truffle compile, for ganache and geth deployments.
+var deployerAddress;
+web3.eth.getAccounts().then(e => {
+	deployerAddress=e[0]; 
+	console.log('Owner (deployer) Address: ' +deployerAddress);
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +59,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/publishContent', publishContentRouter);
+app.use('/buyFromPublisher', buyFromPublisherRouter);
+app.use('/setResalePrice', setResalePriceRouter);
+app.use('/buyToken', buyTokenRouter);
+app.use('/transfer', transferRouter);
+app.use('/viewTokenData', viewTokenDataRouter);
+app.use('/withdrawBalance', withdrawBalanceRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

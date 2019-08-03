@@ -55,6 +55,7 @@ contract Chorder is ERC721{
     uint256 tokenCounter;
 
     //events
+    event MovieBought(address indexed to, uint256 indexed tokenId );
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
     event MoviePublished(address indexed publisher, uint256 indexed movieId);
     //event to be emitted when a seller puts out a token for sale
@@ -117,6 +118,7 @@ contract Chorder is ERC721{
         _generateToken(msg.sender, tokenId,_movieId);
         //publisher's balance gets updated
         accountBalance[fileinfo[_movieId].publisherAddress] += msg.value;
+        emit MovieBought(msg.sender, tokenId);
         return true;
     }
 
