@@ -5,6 +5,12 @@ import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Chorder is ERC721{
 
+    constructor () public {
+        owner = msg.sender;
+    }
+    address owner;
+
+
     //@Publisher Publishing content on the network by the producer
 
     //struct to store content details
@@ -118,6 +124,7 @@ contract Chorder is ERC721{
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
         reSale[tokenId].resalePrice = newPrice*1 finney;
         reSale[tokenId].isUpForResale = true;
+        approve(address(this), tokenId);
         emit ResalePriceSet(newPrice, tokenId, reSale[tokenId].movieId);
     }
 
