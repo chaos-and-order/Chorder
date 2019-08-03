@@ -1,0 +1,25 @@
+{
+  "name": "chorder",
+  "version": "1.0.0",
+  "description": "Placeholder readme.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/chaos-order/chorder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/chaos-order/chorder/issues"
+  },
+  "homepage": "https://gitlab.com/chaos-order/chorder#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^2.3.0"
+  }
+}
