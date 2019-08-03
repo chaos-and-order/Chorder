@@ -18,7 +18,7 @@ contract Chorder is ERC721{
     }
 
     //mappings with unique MovieIds.
-    //movieId is the keyvalue, to store the book details
+    //movieId is the keyvalue, to store the movie details
     mapping(uint256 => ContentInfo) internal fileinfo;
     //movieId is the keyvalue, to store the price of the token for initial buy (MRP of the content)
     mapping (uint256 => uint256) internal setPrice;
@@ -49,9 +49,9 @@ contract Chorder is ERC721{
 
     //events
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
-    event MoviePublished(address indexed publisher, uint256 indexed MovieId);
+    event MoviePublished(address indexed publisher, uint256 indexed movieId);
     //event to be emitted when a seller puts out a token for sale
-    event ResalePriceSet(uint256 indexed resalePrice, uint256 indexed tokenId);
+    event ResalePriceSet(uint256 indexed resalePrice, uint256 indexed tokenId, uint256 indexed movieId);
 
     /**
      * @dev Gets the token name
@@ -70,9 +70,9 @@ contract Chorder is ERC721{
     }
 
 
-    //function to add book details into the chain i.e. publish the book
+    //function to add movie details into the chain i.e. publish the movie
     function addMovieDetails (string memory _ipfshash, uint256 _movieId, uint256 _price, uint256 _transactionCommission) public {
-        require(fileinfo[_movieId].publisherAddress==address(0), "This book has already been published!");
+        require(fileinfo[_movieId].publisherAddress==address(0), "This movie has already been published!");
         fileinfo[_movieId].ipfsHash = _ipfshash;
         fileinfo[_movieId].publisherAddress = msg.sender;
         fileinfo[_movieId].transactionCommission = _transactionCommission;
@@ -118,7 +118,7 @@ contract Chorder is ERC721{
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
         reSale[tokenId].resalePrice = newPrice*1 finney;
         reSale[tokenId].isUpForResale = true;
-        emit ResalePriceSet(newPrice, tokenId);
+        emit ResalePriceSet(newPrice, tokenId, reSale[tokenId].movieId);
     }
 
     function buyToken(uint256 tokenId) public payable{
