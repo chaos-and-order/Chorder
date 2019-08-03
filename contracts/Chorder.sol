@@ -36,6 +36,14 @@ contract Chorder is ERC721{
     //an internally kept balance ledger for all the players on the ecosystem.
     mapping (address => uint256) internal accountBalance;
 
+    //This will be the tokendata.
+    struct tokenIPFS{
+        string ipfsHash;
+    }
+
+    //tokenId to tokenIPFS mapping
+    mapping(uint256 => tokenIPFS) internal tokenData;
+
     //arbitrary counter to help generate unique tokenID
     uint256 tokenCounter;
 
@@ -74,7 +82,7 @@ contract Chorder is ERC721{
     }
 
     //tokenId a value that will be less than 10,000,000,000
-    function generateTokenID(uint256 _movieId) private returns(uint256){
+    function _generateTokenID(uint256 _movieId) private returns(uint256){
         tokenCounter++;
         uint256 tokenid = uint256(keccak256(abi.encodePacked(_movieId, now,tokenCounter))) % 10000;
         return(tokenid);
@@ -85,8 +93,10 @@ contract Chorder is ERC721{
 
         //resalePrice set to initial MRP by default
         reSale[tokenId].resalePrice = setPrice[_movieId];
-        //token is not up for resale by default; the owner needs to put it up for sale. (bool is false by default)
+        //token is not up for resale by default; the owner needs to put it up for sale.
+        //(bool is false by default, so no code here)
         reSale[tokenId].movieId = _movieId;
+        tokenData[tokenId].ipfsHash = fileinfo[_movieId].ipfsHash;
         //tokenData[tokenId].ipfsHash = fileinfo[isbn].ipfsHash;
         emit Transfer(address(0), to, tokenId);
     }
@@ -94,8 +104,8 @@ contract Chorder is ERC721{
     function buyFromPublisher(uint _movieId) public payable returns (bool) {
         //to revert back if the buyer doesn't have the price by the author.
         require(fileinfo[_movieId].publisherAddress != address(0),"Movie does not exist !");
-        require(msg.value == setPrice[_movieId],"Insufficient funds ! Please pay the price as set by the author.");
-        uint256 tokenId = generateTokenID(_movieId);
+        require(msg.value >= setPrice[_movieId],"Insufficient funds ! Please pay the price as set by the author.");
+        uint256 tokenId = _generateTokenID(_movieId);
         //A new and unique token gets generated, corresponding to the particular movie.
         _generateToken(msg.sender, tokenId,_movieId);
         //publisher's balance gets updated
@@ -116,7 +126,7 @@ contract Chorder is ERC721{
         require(reSale[tokenId].isUpForResale == true, "This token hasn't been put for sale by the owner");
         
         //set to a static value. This becomes an auction in future versions
-        require(msg.value == reSale[tokenId].resalePrice, "Your price doesn't match the price given by the tokenOwner");
+        require(msg.value >= reSale[tokenId].resalePrice, "Your price doesn't match the price given by the tokenOwner");
 
         //Finding the commissionPercent from fileinfo, and then finding the concrete value of it
         uint256 resaleCommission = msg.value*((fileinfo[reSale[tokenId].movieId].transactionCommission)/100);
@@ -138,6 +148,12 @@ contract Chorder is ERC721{
         transferFrom(ownerOf(_tokenId), _to, _tokenId);
         reSale[_tokenId].isUpForResale = false;
         emit Transfer(msg.sender, _to, _tokenId);
+    }
+
+    function viewTokenData(uint256 tokenId) public view returns(string memory){
+        require(_exists(tokenId), "Token doesn't exist!");
+        require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
+        return tokenData[tokenId].ipfsHash;
     }
 
 
