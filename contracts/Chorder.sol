@@ -124,7 +124,6 @@ contract Chorder is ERC721{
     function buyToken(uint256 tokenId) public payable{
         //works only if the given token is up for sale
         require(reSale[tokenId].isUpForResale == true, "This token hasn't been put for sale by the owner");
-        
         //set to a static value. This becomes an auction in future versions
         require(msg.value >= reSale[tokenId].resalePrice, "Your price doesn't match the price given by the tokenOwner");
 
@@ -150,6 +149,7 @@ contract Chorder is ERC721{
         emit Transfer(msg.sender, _to, _tokenId);
     }
 
+    //To view the tokenData, i.e to consume the content. only tokenOwner can do so.
     function viewTokenData(uint256 tokenId) public view returns(string memory){
         require(_exists(tokenId), "Token doesn't exist!");
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
