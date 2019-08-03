@@ -9,6 +9,7 @@ contract Chorder is ERC721{
         owner = msg.sender;
     }
     address owner;
+    address saleApprovalAddress;
 
 
     //@Publisher Publishing content on the network by the producer
@@ -124,7 +125,8 @@ contract Chorder is ERC721{
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
         reSale[tokenId].resalePrice = newPrice*1 finney;
         reSale[tokenId].isUpForResale = true;
-        approve(address(this), tokenId);
+        //approve(address(this), tokenId);
+        approve(saleApprovalAddress, tokenId);
         emit ResalePriceSet(newPrice, tokenId, reSale[tokenId].movieId);
     }
 
