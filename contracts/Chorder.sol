@@ -123,12 +123,12 @@ contract Chorder is ERC721{
     }
 
     //function to set resale price on a token that is being put up for sale
-    function setResalePrice(uint256 newPrice, uint256 tokenId) public{
+    function setResalePrice(uint256 newPrice, uint256 tokenId, address approved) public{
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
         reSale[tokenId].resalePrice = newPrice*1 finney;
         reSale[tokenId].isUpForResale = true;
         //approve(address(this), tokenId);
-        approve(saleApprovalAddress, tokenId);
+        approve(approved, tokenId);
         emit ResalePriceSet(newPrice, tokenId, reSale[tokenId].movieId);
     }
 
@@ -151,7 +151,6 @@ contract Chorder is ERC721{
         reSale[tokenId].isUpForResale = false;
     }
 
-
     //To transfer a token freely to an address. Only owner of the said token can do it.
     function transfer(address _to, uint256 _tokenId) public{
         require(ownerOf(_tokenId)==msg.sender, "You are not the owner of this token!");
@@ -161,6 +160,7 @@ contract Chorder is ERC721{
     }
 
     //To view the tokenData, i.e to consume the content. only tokenOwner can do so.
+    //This is a PoC. One would need to wrap the data without showing the hash like this.
     function viewTokenData(uint256 tokenId) public view returns(string memory){
         require(_exists(tokenId), "Token doesn't exist!");
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
@@ -174,7 +174,5 @@ contract Chorder is ERC721{
         (msg.sender).transfer(accountBalance[msg.sender]);
         accountBalance[msg.sender] = 0;
     }
-
-
 
 }
