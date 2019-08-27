@@ -2,8 +2,9 @@ pragma solidity ^0.5.0;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 //import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721Mintable.sol";
+import "./Chorder_Helper.sol";
 
-contract Chorder is ERC721{
+contract Chorder is ERC721, Chorder_Helper{
 
     constructor () public {
         owner = msg.sender;
@@ -127,6 +128,7 @@ contract Chorder is ERC721{
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
         reSale[tokenId].resalePrice = newPrice*1 finney;
         reSale[tokenId].isUpForResale = true;
+        reSalePrices[tokenId] = newPrice * 1 finney;
         //approve(address(this), tokenId);
         approve(approved, tokenId);
         emit ResalePriceSet(newPrice, tokenId, reSale[tokenId].movieId);
