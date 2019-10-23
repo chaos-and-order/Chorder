@@ -4,13 +4,19 @@ import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 //import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721Mintable.sol";
 import "./Chorder_Helper.sol";
 
-contract Chorder is ERC721, Chorder_Helper{
+contract Chorder is ERC721{
 
     constructor () public {
         owner = msg.sender;
     }
     address owner;
     address saleApprovalAddress;
+
+    //Modifier for onlyOwner functions
+    modifier onlyOwner {
+       require(msg.sender == owner, 'You are not the contract owner to call this function!');
+       _;
+    }
 
 
     //@Publisher Publishing content on the network by the producer
@@ -76,6 +82,13 @@ contract Chorder is ERC721, Chorder_Helper{
      */
     function symbol() external pure returns (string memory) {
         return "CHT";
+    }
+
+
+    //Function to be called after both contracts are deployed, to refer each other.
+    //To be called by the contract deployer
+    function setApprovalAddress(address _saleApprovalAddress) public onlyOwner{
+        saleApprovalAddress = _saleApprovalAddress;
     }
 
 
