@@ -44,4 +44,8 @@ contract Chorder_Helper{
         reSalePrices[_tokenid] = _resalePrice;
     }
 
+    function transferToken(uint256 _tokenid) public payable{
+        require(msg.value >= reSalePrices[_tokenid], 'not enough money!');
+    }
+
 }
