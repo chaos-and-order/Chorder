@@ -137,13 +137,16 @@ contract Chorder is ERC721{
     }
 
     //function to set resale price on a token that is being put up for sale
-    function setResalePrice(uint256 newPrice, uint256 tokenId, address approved) public{
+    function setResalePrice(uint256 newPrice, uint256 tokenId) public{
         require(ownerOf(tokenId)==msg.sender, "You are not the owner of this token!");
         reSale[tokenId].resalePrice = newPrice*1 finney;
         reSale[tokenId].isUpForResale = true;
-        reSalePrices[tokenId] = newPrice * 1 finney;
+        //reSalePrices[tokenId] = newPrice * 1 finney;
         //approve(address(this), tokenId);
-        approve(approved, tokenId);
+
+        //TODO:
+        //The saleApprove contract must have a resalePriceMapping that needs to be called here
+        approve(saleApprovalAddress, tokenId);
         emit ResalePriceSet(newPrice, tokenId, reSale[tokenId].movieId);
     }
 
