@@ -2,7 +2,11 @@ pragma solidity ^0.5.0;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 //import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721Mintable.sol";
-import "./Chorder_Helper.sol";
+//import "./Chorder_Helper.sol";
+
+contract Chorder_Helper{
+    function buyContent(uint256, address) public{}
+}
 
 contract Chorder is ERC721{
 
@@ -11,6 +15,7 @@ contract Chorder is ERC721{
     }
     address owner;
     address saleApprovalAddress;
+    address buyer; //for storing the secondary buyer address
 
     //Modifier for onlyOwner functions
     modifier onlyOwner {
@@ -89,7 +94,9 @@ contract Chorder is ERC721{
     //To be called by the contract deployer
     function setApprovalAddress(address _saleApprovalAddress) public onlyOwner{
         saleApprovalAddress = _saleApprovalAddress;
+        Chorder_Helper helperContract = Chorder_Helper(saleApprovalAddress);
     }
+
 
 
     //function to add movie details into the chain i.e. publish the movie
@@ -164,10 +171,18 @@ contract Chorder is ERC721{
         //updating the accountBalance for the tokenOwner
         accountBalance[ownerOf(tokenId)] += (msg.value - resaleCommission);
 
+
+        //TODO: This needs to be a different function
         emit Transfer(ownerOf(tokenId), msg.sender, tokenId);
         transferFrom(ownerOf(tokenId), msg.sender, tokenId);
         reSale[tokenId].isUpForResale = false;
     }
+
+    function reRoute(uint256 _tokenid, address _buyer) private{
+        helperContract.buyContent(_tokenid, _buyer);
+    }
+
+
 
     //To transfer a token freely to an address. Only owner of the said token can do it.
     function transfer(address _to, uint256 _tokenId) public{
