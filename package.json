@@ -20,6 +20,6 @@
   },
   "homepage": "https://gitlab.com/chaos-order/chorder#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^2.3.0"
+    "@openzeppelin/contracts": "^4.7.2"
   }
 }
